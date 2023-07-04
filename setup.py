@@ -19,10 +19,14 @@ class dist_wheel(bdist_wheel):
 
         # Access the plat_name option and store it in the global variable
         global files_to_include
-        if self.plat_name in ['manylinux_2_34_x86_64', 'macosx_x86_64', 'macosx_arm64']:
-            files_to_include.append(f'data/{self.plat_name}/chromedriver')
+        if self.plat_name  ==  'manylinux_2_34_x86_64':
+            files_to_include.append(f'data/linux_x86_64/chromedriver')
         elif self.plat_name == 'win_amd64':
-            files_to_include.append('data/windows/chromedriver.exe')
+            files_to_include.append('data/windows_amd64/chromedriver.exe')
+        elif self.plat_name == 'macosx_10_9_x86_64':
+            files_to_include.append(f'data/mac_x86_64/chromedriver')
+        elif self.plat_name == 'macosx_11_0_arm64':
+            files_to_include.append(f'data/mac_arm64/chromedriver')
         else:
             raise ValueError('Unsupported platform: {}'.format(self.plat_name))
         print('#'*80)

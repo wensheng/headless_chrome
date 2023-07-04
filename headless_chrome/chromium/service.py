@@ -17,8 +17,8 @@
 import typing
 import warnings
 
-from selenium.common import InvalidArgumentException
-from selenium.types import SubprocessStdAlias
+from headless_chrome.common.exceptions import InvalidArgumentException
+from headless_chrome.types import SubprocessStdAlias
 from headless_chrome.common import service
 
 

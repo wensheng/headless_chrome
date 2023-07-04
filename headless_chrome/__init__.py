@@ -1,5 +1,5 @@
 import os
-from distutils.util import get_platform
+from platform import system, machine
 
 from .chrome.options import Options as ChromeOptions  # noqa
 from .chrome.service import Service as ChromeService  # noqa
@@ -10,17 +10,30 @@ from .common.keys import Keys  # noqa
 from .common.proxy import Proxy  # noqa
 from .remote.webdriver import WebDriver as Remote  # noqa
 from .common.by import By
+from .version import __version__
 
-__version__ = '4.10.0'
 
 def headless_chrome():
+    """
+    chromedriver path:
+    - Windows_amd64: ./data/windows_amd64/chromedriver.exe
+    - Linux_x86_64: ./data/linux_x86_64/chromedriver
+    - Mac_x86_64: ./data/mac_x86_64/chromedriver
+    - Mac_arm64: ./data/mac_arm64/chromedriver
+    Other architectures are not supported.
+    """
     options = ChromeOptions()
-    platform = get_platform().replace('-', '_')
+    system_name = system().lower()
+    machine_name = machine().lower()
     parent_dir = os.path.dirname(os.path.abspath(__file__))
-    if platform.startswith('win'):
-        driver_path = os.path.join(parent_dir, 'data', 'windows', 'chromedriver.exe')
+    if system_name == 'darwin':
+        driver_path = os.path.join(parent_dir, 'data', f'mac_{machine_name}', 'chromedriver')
+    elif system_name == 'windows' and machine_name == 'amd64':
+        driver_path = os.path.join(parent_dir, 'data', f'windows_amd64', 'chromedriver.exe')
+    elif system_name == 'linux' and machine_name == 'x86_64':
+        driver_path = os.path.join(parent_dir, 'data', 'linux_x86_64', 'chromedriver')
     else:
-        driver_path = os.path.join(parent_dir, 'data', platform, 'chromedriver')
+        raise Exception(f'Unsupported system: {system_name} {machine_name}')
     service = ChromeService(driver_path)
   
     options.add_argument('--headless')

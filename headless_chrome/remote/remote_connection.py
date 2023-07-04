@@ -26,7 +26,7 @@ from urllib import parse
 import certifi
 import urllib3
 
-from selenium import __version__
+from headless_chrome.version import __version__
 
 from . import utils
 from .command import Command
