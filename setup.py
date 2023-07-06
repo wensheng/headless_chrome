@@ -7,6 +7,10 @@ from setuptools import setup, find_packages
 from wheel.bdist_wheel import bdist_wheel
 
 
+cur_dir = abspath(dirname(__file__))
+with open(join(cur_dir, 'chromedriver_version'), encoding='utf-8') as f:
+    chromedriver_version = f.read()
+
 # system = platform.system().lower()
 files_to_include = []
 
@@ -36,10 +40,10 @@ class dist_wheel(bdist_wheel):
 setup_args = {
     'cmdclass': {'bdist_wheel': dist_wheel},
     'name': 'headless_chrome',
-    'version': '0.4.10',
+    'version': f'{chromedriver_version.split(".")[0]}.4.10',
     'license': 'Apache 2.0',
     'description': 'headless_chrome for Python, based on Selenium WebDriver',
-    'long_description': open(join(abspath(dirname(__file__)), 'README.md')).read(),
+    'long_description': open(join(cur_dir, 'README.md')).read(),
     'url': 'https://github.com/wensheng/headless_chrome/',
     'project_urls': {
         'Bug Tracker': 'https://github.com/wensheng/headless_chrome/issues',
@@ -56,6 +60,7 @@ setup_args = {
     'include_package_data': False,
     'package_data': {'headless_chrome': files_to_include},
     'install_requires': [
+        'certifi>=2020.12.5',
     ],
     'zip_safe': False
 }

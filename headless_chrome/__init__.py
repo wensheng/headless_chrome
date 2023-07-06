@@ -1,3 +1,6 @@
+"""
+HeadlessChrome wraps a headless ChromeDriver inside the Selenium webdriver.
+"""
 import os
 from platform import system, machine
 
@@ -13,7 +16,13 @@ from .common.by import By
 from .version import __version__
 
 
-def headless_chrome():
+class HeadlessChromeException(Exception):
+    """
+    Exception for HeadlessChrome
+    """
+
+
+class HeadlessChrome(Chrome):
     """
     chromedriver path:
     - Windows_amd64: ./data/windows_amd64/chromedriver.exe
@@ -22,25 +31,37 @@ def headless_chrome():
     - Mac_arm64: ./data/mac_arm64/chromedriver
     Other architectures are not supported.
     """
-    options = ChromeOptions()
-    system_name = system().lower()
-    machine_name = machine().lower()
-    parent_dir = os.path.dirname(os.path.abspath(__file__))
-    if system_name == 'darwin':
-        driver_path = os.path.join(parent_dir, 'data', f'mac_{machine_name}', 'chromedriver')
-    elif system_name == 'windows' and machine_name == 'amd64':
-        driver_path = os.path.join(parent_dir, 'data', f'windows_amd64', 'chromedriver.exe')
-    elif system_name == 'linux' and machine_name == 'x86_64':
-        driver_path = os.path.join(parent_dir, 'data', 'linux_x86_64', 'chromedriver')
-    else:
-        raise Exception(f'Unsupported system: {system_name} {machine_name}')
-    service = ChromeService(driver_path)
-  
-    options.add_argument('--headless')
-    options.add_argument('--window-size=1920,1080')
-  
-    return Chrome(service=service, options=options)
-  
+    def __init__(self, *args, **kwargs):
+        if 'options' not in kwargs:
+            kwargs['options'] = ChromeOptions()
+        if not isinstance(kwargs['options'], ChromeOptions):
+            raise HeadlessChromeException('options must be an instance of ChromeOptions')
+
+        kwargs['options'].add_argument('--headless=new')
+        kwargs['options'].add_argument('--window-size=1920,1080')
+
+        system_name = system().lower()
+        machine_name = machine().lower()
+        parent_dir = os.path.dirname(os.path.abspath(__file__))
+        if system_name == 'darwin':
+            driver_path = os.path.join(parent_dir, 'data', f'mac_{machine_name}', 'chromedriver')
+        elif system_name == 'windows' and machine_name == 'amd64':
+            driver_path = os.path.join(parent_dir, 'data', 'windows_amd64', 'chromedriver.exe')
+        elif system_name == 'linux' and machine_name == 'x86_64':
+            driver_path = os.path.join(parent_dir, 'data', 'linux_x86_64', 'chromedriver')
+        else:
+            raise HeadlessChromeException(f'Unsupported system: {system_name} {machine_name}')
+        kwargs['service'] = ChromeService(driver_path)
+
+        super().__init__(*args, **kwargs)
+
+    @property
+    def src(self):
+        """
+        for convience, alias for page_source
+        """
+        return self.page_source
+
 
 # We need an explicit __all__ because the above won't otherwise be exported.
 __all__ = [
@@ -53,5 +74,5 @@ __all__ = [
     'Proxy',
     'Keys',
     'By',
-    'headless_chrome',
+    'HeadlessChrome',
 ]
