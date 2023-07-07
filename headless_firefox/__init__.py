@@ -49,6 +49,8 @@ class HeadlessFirefox(Firefox):
             driver_path = os.path.join(parent_dir, 'data', 'windows_amd64', 'geckodriver.exe')
         elif system_name == 'linux' and machine_name == 'x86_64':
             driver_path = os.path.join(parent_dir, 'data', 'linux_x86_64', 'geckodriver')
+        elif system_name == 'linux' and machine_name == 'arm64':
+            driver_path = os.path.join(parent_dir, 'data', 'linux_arm64', 'geckodriver')
         else:
             raise HeadlessFirefoxException(f'Unsupported system: {system_name} {machine_name}')
         kwargs['service'] = FirefoxService(driver_path)
