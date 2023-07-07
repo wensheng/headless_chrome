@@ -1,3 +1,6 @@
 __pycache__/
 /headless_chrome/data/
 /headless_firefox/data/
+venv/
+dist/
+build/

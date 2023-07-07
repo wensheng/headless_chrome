@@ -37,8 +37,18 @@ class HeadlessChrome(Chrome):
         if not isinstance(kwargs['options'], ChromeOptions):
             raise HeadlessChromeException('options must be an instance of ChromeOptions')
 
-        kwargs['options'].add_argument('--headless=new')
+        if 'headless' in kwargs:
+            if not kwargs['headless']:
+                kwargs['options'].add_argument('--headless=new')
+            del kwargs['headless']
+        else:
+            kwargs['options'].add_argument('--headless=new')
         kwargs['options'].add_argument('--window-size=1920,1080')
+        kwargs['options'].add_argument('--disable-gpu')
+        kwargs['options'].add_argument('--ignore-certificate-errors')
+        kwargs['options'].add_argument('--disable-extensions')
+        kwargs['options'].add_argument('--no-sandbox')
+        kwargs['options'].add_argument('--disable-dev-shm-usage')
 
         system_name = system().lower()
         machine_name = machine().lower()
