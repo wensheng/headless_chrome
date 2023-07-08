@@ -42,10 +42,10 @@ class dist_wheel(bdist_wheel):
 setup_args = {
     'cmdclass': {'bdist_wheel': dist_wheel},
     'name': 'headless_firefox',
-    'version': f'{geckodriver_version.split(".")[0]}.4.10',
+    'version': f'{geckodriver_version.split(".")[1]}.4.10',
     'license': 'Apache 2.0',
     'description': 'headless_firefox for Python, based on Selenium WebDriver',
-    'long_description': open(join(cur_dir, 'README.md')).read(),
+    'long_description': open(join(cur_dir, 'README_firefox.md')).read(),
     'url': 'https://github.com/wensheng/headless_chrome/',
     'project_urls': {
         'Bug Tracker': 'https://github.com/wensheng/headless_chrome/issues',
